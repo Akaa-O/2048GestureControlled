@@ -22,6 +22,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     float[] recordValues = {0, 0, 0};
 
 
+    //
 
     public AccelerometerSensorEventListener(TextView outputView, TextView outputRecordView, LineGraphView outputGraph, ReadingsBuffer inputBuffer) {
         output = outputView;
