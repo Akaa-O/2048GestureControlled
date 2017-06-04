@@ -17,6 +17,13 @@ public class ReadingsBuffer {
         bufferY = new ArrayList<>(size);
         bufferZ = new ArrayList<>(size);
         bufferSize = size;
+
+        for (int i = 0; i < 100; i++) {
+            bufferX.add(0, (float)0.0);
+            bufferY.add(0, (float)0.0);
+            bufferZ.add(0, (float)0.0);
+        }
+
     }
 
     public void update(float[] values) {
@@ -26,7 +33,6 @@ public class ReadingsBuffer {
             bufferZ.remove(bufferZ.size()-1);
             addToIndex(0, values);
             currentSize = bufferSize;
-
 
         } else {
             addToIndex(0, values);
