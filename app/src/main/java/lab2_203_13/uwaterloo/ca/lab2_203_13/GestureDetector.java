@@ -1,0 +1,76 @@
+package lab2_203_13.uwaterloo.ca.lab2_203_13;
+
+import android.util.Log;
+
+public class GestureDetector {
+
+    private enum AccelState{
+        WAIT, RISE_A, FALL_A, FALL_B, RISE_B;
+    }
+
+    private AccelState state;
+    private float positiveThreshold = 1;
+    private float negativeThreshold = -1;
+    private float lastValue;
+    private boolean detectsX;
+    private int sampleCount;
+
+
+
+    public GestureDetector(boolean detectsX){
+        this.state = AccelState.WAIT;
+        this.lastValue = 0;
+        this.detectsX = detectsX;
+        this.sampleCount = 0;
+    }
+
+    public void onValuesChanged(float newReading) {
+        float slope = newReading - lastValue;
+
+        switch (state) {
+
+            case WAIT:
+                sampleCount = 0;
+                if (slope > positiveThreshold) {
+                    state = AccelState.RISE_A;
+                } else if (slope < negativeThreshold) {
+                    state = AccelState.FALL_B;
+                }
+                break;
+            case RISE_A:
+                sampleCount++;
+                if (slope <= 0) {
+                    state = AccelState.FALL_A;
+                }
+                break;
+            case FALL_A:
+                sampleCount++;
+                if (slope >= 0) {
+                    if(sampleCount<=30) {
+                        Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
+                    }
+                    state = AccelState.WAIT;
+                }
+                break;
+            case FALL_B:
+                sampleCount++;
+                if (slope >= 0) {
+                    state = AccelState.RISE_B;
+                }
+                break;
+            case RISE_B:
+                sampleCount++;
+                if (slope <= 0) {
+                    if(sampleCount<=30) {
+                        Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
+                    }
+                    state = AccelState.WAIT;
+                }
+                break;
+            default:
+                state = AccelState.WAIT;
+        }
+
+        lastValue = newReading;
+    }
+}

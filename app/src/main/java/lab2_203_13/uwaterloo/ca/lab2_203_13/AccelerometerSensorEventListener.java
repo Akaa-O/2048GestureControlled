@@ -15,6 +15,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     private TextView recordOutput;
     LineGraphView graph;
     ReadingsBuffer histValues;
+    private GestureDetector xDetector;
+    private GestureDetector yDetector;
 
     float[] newValues = new float[3];
     float[] filteredValues = new float[3];
@@ -31,6 +33,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         recordOutput = outputRecordView;
         graph = outputGraph;
         histValues = inputBuffer;
+        xDetector = new GestureDetector(true);
+        yDetector = new GestureDetector(false);
     }
 
     @Override
@@ -49,6 +53,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
             graph.addPoint(filteredValues);
             histValues.update(filteredValues);
 
+            xDetector.onValuesChanged(filteredValues[0]);
+            yDetector.onValuesChanged(filteredValues[1]);
 
             String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", filteredValues[0], filteredValues[1], filteredValues[2]);
             output.setText(outputString);
