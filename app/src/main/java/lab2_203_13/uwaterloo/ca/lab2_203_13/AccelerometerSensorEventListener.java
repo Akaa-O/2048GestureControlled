@@ -23,7 +23,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
     float[] recordValues = {0, 0, 0};
 
-    static float ATTENUATION_CONSTANT = 5;
+    static float ATTENUATION_CONSTANT = 10;
 
 
     //

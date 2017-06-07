@@ -2,6 +2,8 @@ package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.util.Log;
 
+import static java.lang.String.format;
+
 public class GestureDetector {
 
     private enum AccelState{
@@ -9,8 +11,8 @@ public class GestureDetector {
     }
 
     private AccelState state;
-    private float positiveThreshold = 1;
-    private float negativeThreshold = -1;
+    private float positiveThreshold = 1f;
+    private float negativeThreshold = -1f;
     private float lastValue;
     private boolean detectsX;
     private int sampleCount;
@@ -30,6 +32,7 @@ public class GestureDetector {
         switch (state) {
 
             case WAIT:
+
                 sampleCount = 0;
                 if (slope > positiveThreshold) {
                     state = AccelState.RISE_A;
@@ -38,37 +41,53 @@ public class GestureDetector {
                 }
                 break;
             case RISE_A:
-                sampleCount++;
-                if (slope <= 0) {
+                if (sampleCount < 30) {
+                    sampleCount++;
+                }
+                else
+                {
+                    state = AccelState.WAIT;
+                }
+                if (slope <= -0.2) {
                     state = AccelState.FALL_A;
+
                 }
                 break;
             case FALL_A:
                 sampleCount++;
-                if (slope >= 0) {
+                if (slope >= 0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
                     }
                     state = AccelState.WAIT;
+                    Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
                 break;
             case FALL_B:
-                sampleCount++;
-                if (slope >= 0) {
+                if (sampleCount < 30) {
+                    sampleCount++;
+                } else {
+                    state = AccelState.WAIT;
+                }
+
+                if (slope >= 0.2) {
                     state = AccelState.RISE_B;
                 }
                 break;
             case RISE_B:
                 sampleCount++;
-                if (slope <= 0) {
+                if (slope <= -0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
                     }
                     state = AccelState.WAIT;
+                    Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
                 break;
             default:
                 state = AccelState.WAIT;
+                Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
+
         }
 
         lastValue = newReading;
