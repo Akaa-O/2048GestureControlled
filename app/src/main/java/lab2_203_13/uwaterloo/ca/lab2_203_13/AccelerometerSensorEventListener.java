@@ -33,8 +33,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         recordOutput = outputRecordView;
         graph = outputGraph;
         histValues = inputBuffer;
-        xDetector = new GestureDetector(true);
-        yDetector = new GestureDetector(false);
+        xDetector = new GestureDetector(true, outputView);
+        yDetector = new GestureDetector(false, outputView);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
             yDetector.onValuesChanged(filteredValues[1]);
 
             String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", filteredValues[0], filteredValues[1], filteredValues[2]);
-            output.setText(outputString);
+            //output.setText(outputString);
 
             updateRecordValues();
         }

@@ -1,6 +1,8 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 
 import static java.lang.String.format;
 
@@ -17,13 +19,16 @@ public class GestureDetector {
     private boolean detectsX;
     private int sampleCount;
 
+    private TextView mTextView;
 
 
-    public GestureDetector(boolean detectsX){
+
+    public GestureDetector(boolean detectsX, TextView detection){
         this.state = AccelState.WAIT;
         this.lastValue = 0;
         this.detectsX = detectsX;
         this.sampleCount = 0;
+        mTextView = detection;
     }
 
     public void onValuesChanged(float newReading) {
@@ -33,6 +38,7 @@ public class GestureDetector {
 
             case WAIT:
 
+                mTextView.setText("Waiting");
                 sampleCount = 0;
                 if (slope > positiveThreshold) {
                     state = AccelState.RISE_A;
@@ -58,6 +64,7 @@ public class GestureDetector {
                 if (slope >= 0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
+                        mTextView.setText((detectsX ? "right" : "up"));
                     }
                     state = AccelState.WAIT;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
@@ -79,6 +86,7 @@ public class GestureDetector {
                 if (slope <= -0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
+                        mTextView.setText((detectsX ? "left" : "down"));
                     }
                     state = AccelState.WAIT;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));

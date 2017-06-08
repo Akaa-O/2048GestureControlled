@@ -7,7 +7,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -80,14 +83,18 @@ public class MainActivity extends Activity {
         // Labels
 
         accelerometerSensorLabel = new TextView(getApplicationContext());
-        accelerometerSensorLabel.setText("Accelerometer Value: ");
         accelerometerSensorLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorLabel);
 
         accelerometerSensorRecordLabel = new TextView(getApplicationContext());
-        accelerometerSensorRecordLabel.setText("Accelerometer Record Values: ");
         accelerometerSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorRecordLabel);
+        accelerometerSensorRecordLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        accelerometerSensorRecordLabel.setText("hello");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER;
+
+        accelerometerSensorRecordLabel.setLayoutParams(params);
 
         // Sensor
 
