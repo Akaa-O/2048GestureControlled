@@ -89,12 +89,12 @@ public class MainActivity extends Activity {
         accelerometerSensorRecordLabel = new TextView(getApplicationContext());
         accelerometerSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorRecordLabel);
-        accelerometerSensorRecordLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-        accelerometerSensorRecordLabel.setText("hello");
+        accelerometerSensorLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        // accelerometerSensorLabel.setText("hello");
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.CENTER;
 
-        accelerometerSensorRecordLabel.setLayoutParams(params);
+        accelerometerSensorLabel.setLayoutParams(params);
 
         // Sensor
 

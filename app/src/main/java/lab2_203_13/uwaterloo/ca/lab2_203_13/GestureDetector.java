@@ -18,17 +18,19 @@ public class GestureDetector {
     private float lastValue;
     private boolean detectsX;
     private int sampleCount;
+    private int waitThreshold;
 
     private TextView mTextView;
-
-
 
     public GestureDetector(boolean detectsX, TextView detection){
         this.state = AccelState.WAIT;
         this.lastValue = 0;
         this.detectsX = detectsX;
         this.sampleCount = 0;
+        this.waitThreshold = 0;
+
         mTextView = detection;
+        mTextView.setText("Waiting");
     }
 
     public void onValuesChanged(float newReading) {
@@ -37,8 +39,12 @@ public class GestureDetector {
         switch (state) {
 
             case WAIT:
-
-                mTextView.setText("Waiting");
+                waitThreshold++;
+                if (waitThreshold >= 90) {
+                    waitThreshold = 0;
+                    String outputText = "Waiting";
+                    mTextView.setText(outputText);
+                }
                 sampleCount = 0;
                 if (slope > positiveThreshold) {
                     state = AccelState.RISE_A;
@@ -64,8 +70,9 @@ public class GestureDetector {
                 if (slope >= 0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
-                        mTextView.setText((detectsX ? "right" : "up"));
+                        mTextView.setText((detectsX ? "Right" : "Up"));
                     }
+                    waitThreshold = 0;
                     state = AccelState.WAIT;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
@@ -86,15 +93,15 @@ public class GestureDetector {
                 if (slope <= -0.2) {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
-                        mTextView.setText((detectsX ? "left" : "down"));
+                        mTextView.setText((detectsX ? "Left" : "Down"));
                     }
+                    waitThreshold = 0;
                     state = AccelState.WAIT;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
                 break;
             default:
                 state = AccelState.WAIT;
-                Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
 
         }
 
