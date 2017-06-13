@@ -6,8 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.widget.TextView;
 
-import java.util.EventListener;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 
 public class AccelerometerSensorEventListener implements SensorEventListener {
@@ -16,10 +15,15 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     private TextView recordOutput;
     LineGraphView graph;
     ReadingsBuffer histValues;
+    private GestureDetector xDetector;
+    private GestureDetector yDetector;
 
-    float[] values = new float[3];
+    float[] newValues = new float[3];
+    float[] filteredValues = new float[3];
 
     float[] recordValues = {0, 0, 0};
+
+    static float ATTENUATION_CONSTANT = 10;
 
 
     //
@@ -29,21 +33,31 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         recordOutput = outputRecordView;
         graph = outputGraph;
         histValues = inputBuffer;
+        xDetector = new GestureDetector(true, outputView);
+        yDetector = new GestureDetector(false, outputView);
     }
 
     @Override
     public void onSensorChanged(SensorEvent se) {
-        if (se.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (se.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
 
-            System.arraycopy(se.values, 0, values, 0, 3);
-            // values[0] = se.values[0];
+            System.arraycopy(se.values, 0, newValues, 0, 3);
 
-            graph.addPoint(values);
-            histValues.update(values);
+            // filteredReading += (newReading - filteredReading) / ATTENUATION_CONSTANT
+
+            filteredValues[0] += (newValues[0] - histValues.getBuffer('X').get(0)) / ATTENUATION_CONSTANT;
+            filteredValues[1] += (newValues[1] - histValues.getBuffer('Y').get(0)) / ATTENUATION_CONSTANT;
+            filteredValues[2] += (newValues[2] - histValues.getBuffer('Z').get(0)) / ATTENUATION_CONSTANT;
 
 
-            String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", values[0], values[1], values[2]);
-            output.setText(outputString);
+            graph.addPoint(filteredValues);
+            histValues.update(filteredValues);
+
+            xDetector.onValuesChanged(filteredValues[0]);
+            yDetector.onValuesChanged(filteredValues[1]);
+
+            String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", filteredValues[0], filteredValues[1], filteredValues[2]);
+            //output.setText(outputString);
 
             updateRecordValues();
         }
@@ -55,9 +69,9 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     }
 
     private void updateRecordValues() {
-        for (int i = 0; i < values.length; i++) {
-            if (Math.abs(values[i]) > Math.abs(recordValues[i])) {
-                recordValues[i] = values[i];
+        for (int i = 0; i < filteredValues.length; i++) {
+            if (Math.abs(filteredValues[i]) > Math.abs(recordValues[i])) {
+                recordValues[i] = filteredValues[i];
             }
         }
 

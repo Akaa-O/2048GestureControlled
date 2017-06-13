@@ -7,7 +7,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,13 +27,6 @@ public class MainActivity extends Activity {
 
     SensorManager sensorManager;
 
-    // Light Sensor
-
-    Sensor lightSensor;
-    LightSensorEventListener lightSensorEventListener;
-    TextView lightSensorLabel;
-    TextView lightSensorRecordLabel;
-
     // Accelerometer Sensor
 
     Sensor accelerometerSensor;
@@ -38,22 +34,7 @@ public class MainActivity extends Activity {
     TextView accelerometerSensorLabel;
     TextView accelerometerSensorRecordLabel;
 
-    // Magnetic Field Sensor
-
-    Sensor magnetometerSensor;
-    MagnetometerSensorEventListener magnetometerSensorEventListener;
-    TextView magnetometerSensorLabel;
-    TextView magnetometerSensorRecordLabel;
-
-    // Rotation Sensor
-
-    Sensor rotationSensor;
-    RotationSensorEventListener rotationSensorEventListener;
-    TextView rotationSensorLabel;
-    TextView rotationSensorRecordLabel;
-
     Button samplingButton;
-    Button clearHistoryButton;
 
     ReadingsBuffer accelerometerValues = new ReadingsBuffer(100);
 
@@ -97,107 +78,30 @@ public class MainActivity extends Activity {
 
         mainLayout.addView(samplingButton);
 
-        // TYPE_LIGHT Sensor
-
-        // Labels
-
-        lightSensorLabel = new TextView(getApplicationContext());
-        lightSensorLabel.setText("Light Sensor Value: ");
-        lightSensorLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(lightSensorLabel);
-
-        lightSensorRecordLabel = new TextView(getApplicationContext());
-        lightSensorRecordLabel.setText("Light Sensor Record Value: ");
-        lightSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(lightSensorRecordLabel);
-
-        // Sensor
-
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        lightSensorEventListener = new LightSensorEventListener(lightSensorLabel, lightSensorRecordLabel);
-
         // TYPE_ACCELEROMETER Sensor
 
         // Labels
 
         accelerometerSensorLabel = new TextView(getApplicationContext());
-        accelerometerSensorLabel.setText("Accelerometer \n Value: ");
         accelerometerSensorLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorLabel);
 
         accelerometerSensorRecordLabel = new TextView(getApplicationContext());
-        accelerometerSensorRecordLabel.setText("Accelerometer Record Values: ");
         accelerometerSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorRecordLabel);
+        accelerometerSensorLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        // accelerometerSensorLabel.setText("hello");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER;
+
+        accelerometerSensorLabel.setLayoutParams(params);
 
         // Sensor
 
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerSensorRecordLabel, graph, accelerometerValues);
 
 
-        // TYPE_MAGNETIC_FIELD
-
-        // Labels
-
-        magnetometerSensorLabel = new TextView(getApplicationContext());
-        magnetometerSensorLabel.setText("Magnetometer Value: ");
-        magnetometerSensorLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(magnetometerSensorLabel);
-
-        magnetometerSensorRecordLabel = new TextView(getApplicationContext());
-        magnetometerSensorRecordLabel.setText("Magnetometer Record Value: ");
-        magnetometerSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(magnetometerSensorRecordLabel);
-
-
-        // Sensor
-
-        magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        magnetometerSensorEventListener = new MagnetometerSensorEventListener(magnetometerSensorLabel, magnetometerSensorRecordLabel);
-
-
-        // TYPE_ROTATION
-
-        // Labels
-
-        rotationSensorLabel = new TextView(getApplicationContext());
-        rotationSensorLabel.setText("Rotation Value: ");
-        rotationSensorLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(rotationSensorLabel);
-
-        rotationSensorRecordLabel = new TextView(getApplicationContext());
-        rotationSensorRecordLabel.setText("Rotation Record Value: ");
-        rotationSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
-        mainLayout.addView(rotationSensorRecordLabel);
-
-
-        // Sensor
-
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        rotationSensorEventListener = new RotationSensorEventListener(rotationSensorLabel, rotationSensorRecordLabel);
-
-        // Clear all time high Button
-
-        clearHistoryButton = new Button(getApplicationContext());
-        clearHistoryButton.setText("Clear All Time Highs");
-
-        clearHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                lightSensorEventListener.recordValue = 0;
-
-                for (int i = 0; i < 3; i++) {
-                    accelerometerSensorEventListener.recordValues[i] = 0;
-                    magnetometerSensorEventListener.recordValues[i] = 0;
-                    rotationSensorEventListener.recordValues[i] = 0;
-
-                }
-            }
-        });
-
-        mainLayout.addView(clearHistoryButton);
     }
 
 
@@ -206,14 +110,6 @@ public class MainActivity extends Activity {
         super.onResume();
 
 
-        if (lightSensor != null) {
-            sensorManager.registerListener(
-                    lightSensorEventListener,
-                    lightSensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        } else {
-            lightSensorLabel.setText("Light sensor not available.");
-        }
         if (accelerometerSensor != null) {
             sensorManager.registerListener(
                     accelerometerSensorEventListener,
@@ -222,24 +118,6 @@ public class MainActivity extends Activity {
         } else {
             accelerometerSensorLabel.setText("Accelerometer not available.");
         }
-        if (magnetometerSensor != null) {
-            sensorManager.registerListener(
-
-                    magnetometerSensorEventListener,
-                    magnetometerSensor,
-                    SensorManager.SENSOR_DELAY_GAME);
-        } else {
-            magnetometerSensorLabel.setText("Magnetometer not available.");
-        }
-        if (rotationSensor != null) {
-            sensorManager.registerListener(
-                    rotationSensorEventListener,
-                    rotationSensor,
-                    SensorManager.SENSOR_DELAY_GAME);
-        } else {
-            rotationSensorLabel.setText("Rotation sensor not available.");
-        }
-
 
     }
 
@@ -247,19 +125,9 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-        if (lightSensor != null) {
-            sensorManager.unregisterListener(lightSensorEventListener, lightSensor);
-        }
         if (accelerometerSensor != null) {
             sensorManager.unregisterListener(accelerometerSensorEventListener, accelerometerSensor);
         }
-        if (magnetometerSensor != null) {
-            sensorManager.unregisterListener(magnetometerSensorEventListener, magnetometerSensor);
-        }
-        if (rotationSensor != null) {
-            sensorManager.unregisterListener(rotationSensorEventListener, rotationSensor);
-        }
-
     }
 
     private void writeToFile(ReadingsBuffer accelerometerValues) {
