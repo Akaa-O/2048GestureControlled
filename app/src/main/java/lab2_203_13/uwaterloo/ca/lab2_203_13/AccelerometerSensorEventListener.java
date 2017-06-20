@@ -83,7 +83,6 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
     //function for taking values saved from bundle upon app kill(rotating screen, etc)
     public void feedValues(float[] tempFilteredValues2){
-        Log.d("wow", "collected");
         for(int i=0; i<3; ++i){
             recordValues[i] = tempFilteredValues2[i];
         }
