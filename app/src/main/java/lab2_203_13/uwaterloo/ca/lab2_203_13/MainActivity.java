@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-//cha
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,6 +43,33 @@ public class MainActivity extends Activity {
 
         // tell OS to run it's own pre-defined initialization sequence before running ours
         super.onCreate(savedInstanceState);
+        float[] tempFilteredValues2  = new float[3];
+
+        //label and graph initializations
+        graph = new LineGraphView(getApplicationContext(),
+                100,
+                Arrays.asList("x", "y", "z"));
+        accelerometerSensorRecordLabel = new TextView(getApplicationContext());
+        accelerometerSensorLabel = new TextView(getApplicationContext());
+
+        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerSensorRecordLabel, graph, accelerometerValues);
+        if (savedInstanceState != null){
+            tempFilteredValues2[0] = Float.parseFloat(savedInstanceState.getString("filt0"));
+            tempFilteredValues2[1] = Float.parseFloat(savedInstanceState.getString("filt1"));
+            tempFilteredValues2[2] = Float.parseFloat(savedInstanceState.getString("filt2"));
+            Log.d("x", Float.toString(tempFilteredValues2[0]));
+            Log.d("y", Float.toString(tempFilteredValues2[1]));
+            Log.d("z", Float.toString(tempFilteredValues2[2]));
+
+            accelerometerSensorEventListener.feedValues(tempFilteredValues2);
+            //accelerometerSensorEventListener.recordValues[0] = tempFilteredValues2[0];
+
+        }else{
+            for(int i=0; i<3; ++i) {
+                tempFilteredValues2[i] = 0;
+            }
+        }
+
 
         //my activity is focusing on working with the Activity_Main layout.
         setContentView(R.layout.activity_main);
@@ -52,9 +78,7 @@ public class MainActivity extends Activity {
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.llabel);
 
 
-        graph = new LineGraphView(getApplicationContext(),
-                100,
-                Arrays.asList("x", "y", "z"));
+
 
 
         // SINGLETON (creation) pattern
@@ -82,14 +106,15 @@ public class MainActivity extends Activity {
 
         // Labels
 
-        accelerometerSensorLabel = new TextView(getApplicationContext());
+
         accelerometerSensorLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorLabel);
 
-        accelerometerSensorRecordLabel = new TextView(getApplicationContext());
+
         accelerometerSensorRecordLabel.setTextColor(Color.parseColor("#000000"));
         mainLayout.addView(accelerometerSensorRecordLabel);
         accelerometerSensorLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+
         // accelerometerSensorLabel.setText("hello");
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.CENTER;
@@ -99,7 +124,7 @@ public class MainActivity extends Activity {
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerSensorRecordLabel, graph, accelerometerValues);
+
 
 
     }
@@ -161,6 +186,16 @@ public class MainActivity extends Activity {
 
             Log.d("Lab1_203_13: ", "File write ended");
         }
+    }
+
+    protected void onSaveInstanceState(Bundle b){
+        super.onSaveInstanceState(b);
+        float[] tempFilteredValues = accelerometerSensorEventListener.collect();
+
+        b.putString("filt0", Float.toString(tempFilteredValues[0]));
+        b.putString("filt1", Float.toString(tempFilteredValues[1]));
+        b.putString("filt2", Float.toString(tempFilteredValues[2]));
+
     }
 
 }
