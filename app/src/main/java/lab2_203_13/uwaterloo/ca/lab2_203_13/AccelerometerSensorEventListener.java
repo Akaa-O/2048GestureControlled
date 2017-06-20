@@ -4,6 +4,7 @@ package lab2_203_13.uwaterloo.ca.lab2_203_13;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     float[] newValues = new float[3];
     float[] filteredValues = new float[3];
 
-    float[] recordValues = {0, 0, 0};
+    float[] recordValues = {0,0,0};
 
     static float ATTENUATION_CONSTANT = 10;
 
@@ -77,6 +78,20 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
         String recordOutputString = String.format("Accelerometer Record Values: x: %.2f, y: %.2f, z: %.2f", recordValues[0], recordValues[1], recordValues[2]);
         recordOutput.setText(recordOutputString);
+
+    }
+
+    //function for taking values saved from bundle upon app kill(rotating screen, etc)
+    public void feedValues(float[] tempFilteredValues2){
+        Log.d("wow", "collected");
+        for(int i=0; i<3; ++i){
+            recordValues[i] = tempFilteredValues2[i];
+        }
+    }
+
+    //function for feeding record values to bundle
+    public float[] collect(){
+        return recordValues;
 
     }
 }
