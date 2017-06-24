@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class AccelerometerSensorEventListener implements SensorEventListener {
 
     private TextView output;
-    private TextView recordOutput;
     LineGraphView graph;
     ReadingsBuffer histValues;
     private GestureDetector xDetector;
@@ -28,9 +27,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
     //
 
-    public AccelerometerSensorEventListener(TextView outputView, TextView outputRecordView, LineGraphView outputGraph, ReadingsBuffer inputBuffer) {
+    public AccelerometerSensorEventListener(TextView outputView, LineGraphView outputGraph, ReadingsBuffer inputBuffer) {
         output = outputView;
-        recordOutput = outputRecordView;
         graph = outputGraph;
         histValues = inputBuffer;
         xDetector = new GestureDetector(true, outputView);
@@ -58,8 +56,6 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
             String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", filteredValues[0], filteredValues[1], filteredValues[2]);
             //output.setText(outputString);
-
-            updateRecordValues();
         }
     }
 
@@ -68,15 +64,4 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
     }
 
-    private void updateRecordValues() {
-        for (int i = 0; i < filteredValues.length; i++) {
-            if (Math.abs(filteredValues[i]) > Math.abs(recordValues[i])) {
-                recordValues[i] = filteredValues[i];
-            }
-        }
-
-        String recordOutputString = String.format("Accelerometer Record Values: x: %.2f, y: %.2f, z: %.2f", recordValues[0], recordValues[1], recordValues[2]);
-        recordOutput.setText(recordOutputString);
-
-    }
 }

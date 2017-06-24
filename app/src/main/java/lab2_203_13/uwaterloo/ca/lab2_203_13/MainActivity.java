@@ -33,7 +33,6 @@ public class MainActivity extends Activity {
     Sensor accelerometerSensor;
     AccelerometerSensorEventListener accelerometerSensorEventListener;
     TextView accelerometerSensorLabel;
-    TextView accelerometerSensorRecordLabel;
 
     ReadingsBuffer accelerometerValues = new ReadingsBuffer(100);
 
@@ -55,10 +54,15 @@ public class MainActivity extends Activity {
 
         // TYPE_ACCELEROMETER Sensor
 
+        accelerometerSensorLabel = new TextView(getApplicationContext());
+        mainLayout.addView(accelerometerSensorLabel);
+
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerSensorRecordLabel, graph, accelerometerValues);
+        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, graph, accelerometerValues);
+
+
 
 
     }
