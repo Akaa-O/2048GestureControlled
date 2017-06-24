@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 
 public class AccelerometerSensorEventListener implements SensorEventListener {
-
-    private TextView output;
     LineGraphView graph;
     ReadingsBuffer histValues;
     private GestureDetector xDetector;
@@ -20,15 +18,12 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     float[] newValues = new float[3];
     float[] filteredValues = new float[3];
 
-    float[] recordValues = {0, 0, 0};
-
     static float ATTENUATION_CONSTANT = 10;
 
 
     //
 
     public AccelerometerSensorEventListener(TextView outputView, LineGraphView outputGraph, ReadingsBuffer inputBuffer) {
-        output = outputView;
         graph = outputGraph;
         histValues = inputBuffer;
         xDetector = new GestureDetector(true, outputView);
@@ -54,8 +49,6 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
             xDetector.onValuesChanged(filteredValues[0]);
             yDetector.onValuesChanged(filteredValues[1]);
 
-            String outputString = String.format("Accelerometer Values: x: %.2f, y: %.2f, z: %.2f", filteredValues[0], filteredValues[1], filteredValues[2]);
-            //output.setText(outputString);
         }
     }
 
