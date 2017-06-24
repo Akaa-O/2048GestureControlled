@@ -1,11 +1,8 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
-import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static java.lang.String.format;
 
@@ -16,14 +13,12 @@ public class GestureDetector {
     }
 
     private AccelState state;
-    private float positiveThreshold = 2f;
-    private float negativeThreshold = -2f;
+    private float positiveThreshold = 4f;
+    private float negativeThreshold = -4f;
     private float lastValue;
     private boolean detectsX;
     private int sampleCount;
     private int waitThreshold;
-
-    private boolean wait = false;
 
     private TextView mTextView;
     private GameLoopTask gameLoopTask;
