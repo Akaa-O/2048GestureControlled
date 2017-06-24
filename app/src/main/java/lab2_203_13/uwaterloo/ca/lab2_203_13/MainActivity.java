@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.llabel);
 
-        mainLayout.setBackgroundResource(R.drawable.gameboard);
+       // mainLayout.setBackgroundResource(R.drawable.gameboard);
 
         // SINGLETON (creation) pattern
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, graph, accelerometerValues);
+        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerValues);
 
 
 
