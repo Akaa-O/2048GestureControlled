@@ -1,7 +1,7 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.content.Context;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 
 /**
  * Created by desmond on 6/24/17.
@@ -9,46 +9,55 @@ import android.widget.ImageView;
 
 public class GameBlock extends android.support.v7.widget.AppCompatImageView{
 
-    public enum Direction{
-        LEFT, RIGHT, UP, DOWN, STOPPED
-    }
+    private static final float IMAGE_SCALE = 0.66F;
+    private GameLoopTask.Direction myDirection;
 
-    private float x;
-    private float y;
-    private static final float IMAGE_SCALE = 1;
-    private Direction myDirection;
+    private float targetX;
+    private float targetY;
+    private float velocity;
 
     public GameBlock(Context myContext,float coordX, float coordY){
         super(myContext);
-        myDirection = Direction.STOPPED;
-        x = coordX;
-        y = coordY;
+        myDirection = GameLoopTask.Direction.STOPPED;
+        setX(coordX);
+        setY(coordY);
         this.setImageResource(R.drawable.gameblock);
+        this.setScaleType(ScaleType.FIT_XY);
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
+        velocity = 0;
+        targetX = coordX;
+        targetY = coordY;
     }
 
-    public float getX(){
-        return x;
+    public void setTargetX(float targetX){
+        this.targetX = targetX;
     }
 
-    public float getY(){
-        return y;
+    public void setTargetY(float targetY){
+        this.targetY = targetY;
     }
 
-    public void setX(float x){
-        this.x = x;
+    public float getTargetX(){
+        return targetX;
     }
 
-    public void setY(float y){
-        this.y = y;
+    public float getTargetY(){
+        return targetY;
     }
 
-    public Direction getDirection(){
+    public float getVelocity(){
+        return velocity;
+    }
+    public void setVelocity(float velocity){
+        this.velocity = velocity;
+    }
+
+    public GameLoopTask.Direction getDirection(){
         return myDirection;
     }
 
-    public void setDirection(Direction dir){
+    public void setDirection(GameLoopTask.Direction dir){
         myDirection = dir;
     }
 }

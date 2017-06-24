@@ -1,7 +1,11 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.String.format;
 
@@ -12,21 +16,25 @@ public class GestureDetector {
     }
 
     private AccelState state;
-    private float positiveThreshold = 1f;
-    private float negativeThreshold = -1f;
+    private float positiveThreshold = 2f;
+    private float negativeThreshold = -2f;
     private float lastValue;
     private boolean detectsX;
     private int sampleCount;
     private int waitThreshold;
 
-    private TextView mTextView;
+    private boolean wait = false;
 
-    public GestureDetector(boolean detectsX, TextView detection){
+    private TextView mTextView;
+    private GameLoopTask gameLoopTask;
+
+    public GestureDetector(boolean detectsX, TextView detection, GameLoopTask gameLoopTask){
         this.state = AccelState.WAIT;
         this.lastValue = 0;
         this.detectsX = detectsX;
         this.sampleCount = 0;
         this.waitThreshold = 0;
+        this.gameLoopTask = gameLoopTask;
 
         mTextView = detection;
         mTextView.setText("Waiting");
@@ -70,6 +78,7 @@ public class GestureDetector {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
                         mTextView.setText((detectsX ? "Right" : "Up"));
+                        this.gameLoopTask.setDirection((detectsX ? GameLoopTask.Direction.RIGHT : GameLoopTask.Direction.UP));
                     }
                     waitThreshold = 0;
                     state = AccelState.WAIT;
@@ -93,6 +102,7 @@ public class GestureDetector {
                     if(sampleCount<=30) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
                         mTextView.setText((detectsX ? "Left" : "Down"));
+                        this.gameLoopTask.setDirection((detectsX ? GameLoopTask.Direction.LEFT : GameLoopTask.Direction.DOWN));
                     }
                     waitThreshold = 0;
                     state = AccelState.WAIT;
