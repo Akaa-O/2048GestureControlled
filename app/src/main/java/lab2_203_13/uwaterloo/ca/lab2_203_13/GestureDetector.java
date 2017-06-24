@@ -1,6 +1,5 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
 
