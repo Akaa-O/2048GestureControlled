@@ -40,14 +40,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // tell OS to run it's own pre-defined initialization sequence before running ours
         super.onCreate(savedInstanceState);
-
-        //my activity is focusing on working with the Activity_Main layout.
         setContentView(R.layout.activity_main);
 
-
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.llabel);
+
+        mainLayout.setBackgroundResource(R.drawable.gameboard);
 
         // SINGLETON (creation) pattern
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
