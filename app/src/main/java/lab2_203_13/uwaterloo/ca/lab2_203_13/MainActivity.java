@@ -33,7 +33,6 @@ public class MainActivity extends Activity {
     Sensor accelerometerSensor;
     AccelerometerSensorEventListener accelerometerSensorEventListener;
     TextView accelerometerSensorLabel;
-    TextView accelerometerSensorRecordLabel;
 
     ReadingsBuffer accelerometerValues = new ReadingsBuffer(100);
 
@@ -41,24 +40,27 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // tell OS to run it's own pre-defined initialization sequence before running ours
         super.onCreate(savedInstanceState);
-
-        //my activity is focusing on working with the Activity_Main layout.
         setContentView(R.layout.activity_main);
 
-
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.llabel);
+
+       // mainLayout.setBackgroundResource(R.drawable.gameboard);
 
         // SINGLETON (creation) pattern
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         // TYPE_ACCELEROMETER Sensor
 
+        accelerometerSensorLabel = new TextView(getApplicationContext());
+        mainLayout.addView(accelerometerSensorLabel);
+
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerSensorRecordLabel, graph, accelerometerValues);
+        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerValues);
+
+
 
 
     }
