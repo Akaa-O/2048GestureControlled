@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="lab2_203_13.uwaterloo.ca.lab2_203_13.MainActivity"
 
-    android:id="@+id/scroll"
-    android:layout_width="fill_parent"
+    android:id="@+id/llabel"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/llabel"
-        tools:context="lab1_203_13.uwaterloo.ca.lab1_203_13.MainActivity"
-        android:orientation="vertical">
-
-    </RelativeLayout>
-</ScrollView>
+</RelativeLayout>

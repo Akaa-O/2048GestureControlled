@@ -22,10 +22,10 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
 
     //
 
-    public AccelerometerSensorEventListener(TextView outputView, ReadingsBuffer inputBuffer) {
+    public AccelerometerSensorEventListener(TextView outputView, ReadingsBuffer inputBuffer, GameLoopTask gameLoopTask) {
         histValues = inputBuffer;
-        xDetector = new GestureDetector(true, outputView);
-        yDetector = new GestureDetector(false, outputView);
+        xDetector = new GestureDetector(true, outputView, gameLoopTask);
+        yDetector = new GestureDetector(false, outputView, gameLoopTask);
     }
 
     @Override

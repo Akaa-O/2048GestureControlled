@@ -1,6 +1,9 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.TimerTask;
@@ -12,73 +15,116 @@ import java.util.TimerTask;
 public class GameLoopTask extends TimerTask{
 
     private Activity myActivity;
-    private ArrayList<GameBlock> myBlocks;
-    private static final float GRID_WIDTH = 30;
-    private static final float GRID_HEIGHT = 30;
-    private static final float X_MAX = 200;
-    private static final float Y_MAX = 200;
+    private RelativeLayout relativeLayout;
+    private Context context;
+    public Direction currentDirection;
 
-    public GameLoopTask(Activity activity){
+
+    private ArrayList<GameBlock> myBlocks;
+    private static final float X_MIN = -58F;
+    private static final float Y_MIN = -58F;
+    private static final float X_MAX = 747F;
+    private static final float Y_MAX = 747F;
+    private static final float ACCELERATION = 30;
+
+
+    public GameLoopTask(Activity activity, Context context, RelativeLayout relativeLayout){
         myActivity = activity;
+        myBlocks = new ArrayList<>();
+        this.relativeLayout = relativeLayout;
+        this.context = context;
+        currentDirection = Direction.STOPPED;
     }
 
     @Override
     public void run() {
+        //Update Screen
 
-        //Set block new position based on direction
-
-        for (final GameBlock block : myBlocks) {
-
-            switch (block.getDirection()) {
-
-                case LEFT:
-                    if (block.getX() > 0) {
-                        block.setX(block.getX() - GRID_WIDTH);
-                    }
-                    break;
-
-                case RIGHT:
-                    if (block.getX() < X_MAX) {
-                        block.setX(block.getX() + GRID_WIDTH);
-                    }
-                    break;
-
-                case UP:
-                    if (block.getY() > 0) {
-                        block.setY(block.getY() - GRID_HEIGHT);
-                    }
-                    break;
-
-                case DOWN:
-                    if (block.getY() < Y_MAX) {
-                        block.setY(block.getY() + GRID_HEIGHT);
-                    }
-                    break;
-
-                default:
+        myActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                move();
             }
+        });
 
-
-            //Stop block
-
-            block.setDirection(GameBlock.Direction.STOPPED);
-
-            //Update Screen
-
-            myActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    block.setX(block.getX());
-                    block.setY(block.getY());
-                }
-            });
-
-        }
     }
 
     public void createBlock(){
-        GameBlock block = new GameBlock(myActivity, 10, 10);
+        final GameBlock block = new GameBlock(context, X_MIN, Y_MIN);
+        relativeLayout.addView(block);
         myBlocks.add(block);
     }
 
+    public void move(){
+        for(GameBlock block : myBlocks){
+            switch(currentDirection){
+                case LEFT:
+                    block.setTargetX(X_MIN);
+                    if(block.getX()>block.getTargetX()){
+                        block.setX(block.getX()-block.getVelocity());
+                        block.setVelocity(block.getVelocity()+ACCELERATION);
+                    }else{
+                        block.setX(block.getTargetX());
+                        block.setVelocity(0);
+                        block.setDirection(Direction.STOPPED);
+                        currentDirection = Direction.STOPPED;
+                    }
+                    break;
+                case RIGHT:
+                    block.setTargetX(X_MAX);
+                    if(block.getX()<block.getTargetX()){
+                        block.setX(block.getX()+block.getVelocity());
+                        block.setVelocity(block.getVelocity()+ACCELERATION);
+                    }else{
+                        block.setX(block.getTargetX());
+                        block.setVelocity(0);
+                        block.setDirection(Direction.STOPPED);
+                        currentDirection = Direction.STOPPED;
+                    }
+                    break;
+                case UP:
+                    block.setTargetY(Y_MIN);
+                    if(block.getY()>block.getTargetY()){
+                        block.setY(block.getY()-block.getVelocity());
+                        block.setVelocity(block.getVelocity()+ACCELERATION);
+                    }else{
+                        block.setY(block.getTargetY());
+                        block.setVelocity(0);
+                        block.setDirection(Direction.STOPPED);
+                        currentDirection = Direction.STOPPED;
+                    }
+                    break;
+                case DOWN:
+                    block.setTargetY(Y_MAX);
+                    if(block.getY()<block.getTargetY()){
+                        block.setY(block.getY()+block.getVelocity());
+                        block.setVelocity(block.getVelocity()+ACCELERATION);
+                    }else{
+                        block.setY(block.getTargetY());
+                        block.setVelocity(0);
+                        block.setDirection(Direction.STOPPED);
+                        currentDirection = Direction.STOPPED;
+                    }
+                    break;
+                default:
+                    block.setDirection(Direction.STOPPED);
+                    currentDirection = Direction.STOPPED;
+                    break;
+            }
+        }
+    }
+
+    public void setDirection(Direction direction){
+        if(!currentDirection.equals(Direction.STOPPED)){
+            return;
+        }
+        currentDirection = direction;
+        for(GameBlock block : myBlocks){
+            block.setDirection(direction);
+        }
+    }
+
+    public enum Direction{
+        LEFT, RIGHT, UP, DOWN, STOPPED
+    }
 }
