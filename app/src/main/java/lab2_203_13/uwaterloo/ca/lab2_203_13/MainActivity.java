@@ -49,7 +49,9 @@ public class MainActivity extends Activity {
         // TYPE_ACCELEROMETER Sensor
 
         accelerometerSensorLabel = new TextView(getApplicationContext());
-        //mainLayout.addView(accelerometerSensorLabel);
+        accelerometerSensorLabel.setX(1080/2+10);
+        accelerometerSensorLabel.setY(20);
+        mainLayout.addView(accelerometerSensorLabel);
 
         //GameLoopTask
         Timer timer = new Timer();
