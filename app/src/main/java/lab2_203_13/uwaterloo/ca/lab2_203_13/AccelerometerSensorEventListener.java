@@ -43,6 +43,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
             histValues.update(filteredValues);
 
             xDetector.onValuesChanged(filteredValues[0]);
+
             yDetector.onValuesChanged(filteredValues[1]);
 
         }
