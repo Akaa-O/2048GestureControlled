@@ -1,18 +1,26 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Color;
 
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.widget.ImageView;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.Timer;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends Activity {
 
@@ -36,12 +44,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.llabel);
-        ImageView board = new ImageView(this);
-        board.setImageResource(R.drawable.gameboard);
-        mainLayout.getLayoutParams().width = 1080;
-        mainLayout.getLayoutParams().height = 1080;
+        mainLayout.getLayoutParams().width = 1000;
+        mainLayout.getLayoutParams().height = 1000;
 
         mainLayout.setBackgroundResource(R.drawable.gameboard);
+
+
+       // mainLayout.setBackgroundResource(R.drawable.gameboard);
 
         // SINGLETON (creation) pattern
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -49,18 +58,14 @@ public class MainActivity extends Activity {
         // TYPE_ACCELEROMETER Sensor
 
         accelerometerSensorLabel = new TextView(getApplicationContext());
-        //mainLayout.addView(accelerometerSensorLabel);
-
-        //GameLoopTask
-        Timer timer = new Timer();
-        GameLoopTask gameLoopTask = new GameLoopTask(this, getBaseContext(), mainLayout);
-        gameLoopTask.createBlock();
-        timer.schedule(gameLoopTask, 50, 50);
+        mainLayout.addView(accelerometerSensorLabel);
 
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerValues, gameLoopTask);
+        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerValues);
+
+
 
 
     }
@@ -90,10 +95,4 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static int convertPixelsToDp(float px, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        int dp = (int) (px / (metrics.densityDpi/ 160f));
-        return dp;
-    }
 }
