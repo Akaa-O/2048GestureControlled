@@ -9,16 +9,19 @@ import static java.lang.String.format;
 public class GestureDetector {
 
     private enum AccelState{
-        WAIT, RISE_A, FALL_A, FALL_B, RISE_B;
+        WAIT, RISE_A, FALL_A, FALL_B, RISE_B, PAUSE;
     }
 
+    final private int sampleCounts = 20;
+
     private AccelState state;
-    private float positiveThreshold = 4f;
-    private float negativeThreshold = -4f;
+    private float positiveThreshold = 3.5f;
+    private float negativeThreshold = -3.5f;
     private float lastValue;
     private boolean detectsX;
     private int sampleCount;
     private int waitThreshold;
+    private int pauseSamples;
 
     private TextView mTextView;
     private GameLoopTask gameLoopTask;
@@ -30,6 +33,7 @@ public class GestureDetector {
         this.sampleCount = 0;
         this.waitThreshold = 0;
         this.gameLoopTask = gameLoopTask;
+        this.pauseSamples = 0;
 
         mTextView = detection;
         mTextView.setText("Waiting");
@@ -39,6 +43,13 @@ public class GestureDetector {
         float slope = newReading - lastValue;
 
         switch (state) {
+            case PAUSE:
+                if (pauseSamples < 50) {
+                    pauseSamples++;
+                }
+                else {
+                    state = AccelState.WAIT;
+                }
 
             case WAIT:
                 waitThreshold++;
@@ -55,52 +66,52 @@ public class GestureDetector {
                 }
                 break;
             case RISE_A:
-                if (sampleCount < 30) {
+                if (sampleCount < sampleCounts) {
                     sampleCount++;
                 }
                 else
                 {
-                    state = AccelState.WAIT;
+                    state = AccelState.PAUSE;
                 }
-                if (slope <= -0.2) {
+                if (slope <= -0.20) {
                     state = AccelState.FALL_A;
 
                 }
                 break;
             case FALL_A:
                 sampleCount++;
-                if (slope >= 0.2) {
-                    if(sampleCount<=30) {
+                if (slope >= 0.20) {
+                    if(sampleCount<= sampleCounts) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "right" : "up"));
                         mTextView.setText((detectsX ? "Right" : "Up"));
                         this.gameLoopTask.setDirection((detectsX ? GameLoopTask.Direction.RIGHT : GameLoopTask.Direction.UP));
                     }
                     waitThreshold = 0;
-                    state = AccelState.WAIT;
+                    state = AccelState.PAUSE;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
                 break;
             case FALL_B:
-                if (sampleCount < 30) {
+                if (sampleCount < sampleCounts) {
                     sampleCount++;
                 } else {
-                    state = AccelState.WAIT;
+                    state = AccelState.PAUSE;
                 }
 
-                if (slope >= 0.2) {
+                if (slope >= 0.20) {
                     state = AccelState.RISE_B;
                 }
                 break;
             case RISE_B:
                 sampleCount++;
-                if (slope <= -0.2) {
-                    if(sampleCount<=30) {
+                if (slope <= -0.20) {
+                    if(sampleCount<= sampleCounts) {
                         Log.d(this.getClass().getSimpleName(), "Detected " + (detectsX ? "left" : "down"));
                         mTextView.setText((detectsX ? "Left" : "Down"));
                         this.gameLoopTask.setDirection((detectsX ? GameLoopTask.Direction.LEFT : GameLoopTask.Direction.DOWN));
                     }
                     waitThreshold = 0;
-                    state = AccelState.WAIT;
+                    state = AccelState.PAUSE;
                     Log.d(this.getClass().getSimpleName(), format("%.2f", slope));
                 }
                 break;
