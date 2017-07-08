@@ -28,8 +28,8 @@ public class GameLoopTask extends TimerTask{
     private static final float X_MAX = 747F;
     private static final float Y_MAX = 747F;
 
-    private static final float[] XPositions = {X_MIN, 0, 0, X_MAX};
-    private static final float[] YPositions = {Y_MIN, 0, 0, Y_MAX};
+    private static final float[] XPositions = {X_MIN, 210.33f, 478.66f, X_MAX};
+    private static final float[] YPositions = {Y_MIN, 210.33f, 478.66f, Y_MAX};
 
     public GameLoopTask(Activity activity, Context context, RelativeLayout relativeLayout){
         myActivity = activity;
