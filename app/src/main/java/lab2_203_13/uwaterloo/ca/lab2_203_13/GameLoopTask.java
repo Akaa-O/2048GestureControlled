@@ -66,7 +66,7 @@ public class GameLoopTask extends TimerTask{
         do{
             newX = randomNum.nextInt(4);
             newY = randomNum.nextInt(4);
-        }while(isOccupied(newX, newY));
+        }while(isOccupied(XPositions[newX], YPositions[newY]));
 
         GameBlockTemplate block = new GameBlock(context, XPositions[newX], YPositions[newY], relativeLayout);
         myBlocks.add(block);
@@ -122,7 +122,7 @@ public class GameLoopTask extends TimerTask{
 
     public boolean isOccupied(float x, float y) {
         for (GameBlockTemplate block : myBlocks) {
-            if (Math.abs(x-block.getTargetX())<1 && Math.abs(y-block.getTargetY())<1) {
+            if (Math.abs(x-block.getTargetX())<10 && Math.abs(y-block.getTargetY())<10) {
                 return true;
             }
         }
@@ -131,7 +131,7 @@ public class GameLoopTask extends TimerTask{
 
     public boolean isCurrentlyOccupied(float x, float y) {
         for (GameBlockTemplate block : myBlocks) {
-            if (Math.abs(x-block.getX())<1 && Math.abs(y-block.getY())<1) {
+            if (Math.abs(x-block.getX())<10 && Math.abs(y-block.getY())<10) {
                 return true;
             }
         }
@@ -149,7 +149,7 @@ public class GameLoopTask extends TimerTask{
         if(checksX){
             if(dir == Direction.LEFT){
                 currentlyChecking = X_MIN;
-                while(currentlyChecking-currentBlock.getX()<-1){
+                while(currentlyChecking-currentBlock.getX()<-10){
                     if(isCurrentlyOccupied(currentlyChecking, currentBlock.getY())){
                         System.out.println(currentlyChecking);
                         System.out.println(currentBlock.getY());
@@ -161,7 +161,7 @@ public class GameLoopTask extends TimerTask{
                 return num;
             }else if(dir == Direction.RIGHT){
                 currentlyChecking = X_MAX;
-                while(currentlyChecking-currentBlock.getX()>1){
+                while(currentlyChecking-currentBlock.getX()>10){
                     if(isCurrentlyOccupied(currentlyChecking, currentBlock.getY())){
                         System.out.println(currentlyChecking);
                         System.out.println(currentBlock.getY());
@@ -175,7 +175,7 @@ public class GameLoopTask extends TimerTask{
         }else{
             if(dir == Direction.UP){
                 currentlyChecking = Y_MIN;
-                while(currentlyChecking-currentBlock.getY()<-1){
+                while(currentlyChecking-currentBlock.getY()<-10){
                     if(isCurrentlyOccupied(currentBlock.getX(), currentlyChecking)){
                         System.out.println(currentBlock.getX());
                         System.out.println(currentlyChecking);
@@ -187,7 +187,7 @@ public class GameLoopTask extends TimerTask{
                 return num;
             }else if(dir == Direction.DOWN){
                 currentlyChecking = Y_MAX;
-                while(currentlyChecking-currentBlock.getX()>1){
+                while(currentlyChecking-currentBlock.getY()>10){
                     if(isCurrentlyOccupied(currentBlock.getX(), currentlyChecking)){
                         System.out.println(currentBlock.getX());
                         System.out.println(currentlyChecking);
