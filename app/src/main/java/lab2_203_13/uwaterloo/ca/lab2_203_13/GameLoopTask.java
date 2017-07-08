@@ -25,8 +25,8 @@ public class GameLoopTask extends TimerTask{
     private ArrayList<GameBlockTemplate> myBlocks;
     private static final float X_MIN = -58F;
     private static final float Y_MIN = -58F;
-    private static final float X_MAX = 747F;
-    private static final float Y_MAX = 747F;
+    private static final float X_MAX = 746.99F;
+    private static final float Y_MAX = 746.99F;
 
     private static final float[] XPositions = {X_MIN, 210.33f, 478.66f, X_MAX};
     private static final float[] YPositions = {Y_MIN, 210.33f, 478.66f, Y_MAX};
@@ -136,18 +136,18 @@ public class GameLoopTask extends TimerTask{
     private int inBetween(GameBlockTemplate currentBlock, Direction dir, boolean checksX){
         int num = 0;
         for(GameBlockTemplate block : myBlocks){
-            if(currentBlock.getX()==block.getTargetX()&&currentBlock.getY()==block.getTargetY()){   //Same block
+            if(currentBlock.getX()==block.getX()&&currentBlock.getY()==block.getY()){   //Same block
                 continue;
-            }else if(checksX&&currentBlock.getY()==block.getTargetY()){ //block aligned in x axis
-                if(dir.equals(Direction.LEFT)&&block.getTargetX()<currentBlock.getX()){
+            }else if(checksX&&currentBlock.getY()==block.getY()){ //block aligned in x axis
+                if(dir.equals(Direction.LEFT)&&block.getX()<currentBlock.getX()){
                     num++;
-                }else if(dir.equals(Direction.RIGHT)&&block.getTargetX()>currentBlock.getX()){
+                }else if(dir.equals(Direction.RIGHT)&&block.getX()>currentBlock.getX()){
                     num++;
                 }
-            }else if(!checksX&&currentBlock.getX()==block.getTargetX()) {  //block aligned in y axis
-                if(dir.equals(Direction.UP)&&block.getTargetY()<currentBlock.getY()){
+            }else if(!checksX&&currentBlock.getX()==block.getX()) {  //block aligned in y axis
+                if(dir.equals(Direction.UP)&&block.getY()<currentBlock.getY()){
                     num++;
-                }else if(dir.equals(Direction.DOWN)&&block.getTargetY()>currentBlock.getY()){
+                }else if(dir.equals(Direction.DOWN)&&block.getY()>currentBlock.getY()){
                     num++;
                 }
             }
