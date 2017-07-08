@@ -56,13 +56,16 @@ public class GameBlock extends GameBlockTemplate{
         this.targetY = targetY;
     }
 
-    public boolean isStopped(){
-        return targetX==getX() && targetY==getY();
+    public float getTargetX(){
+        return targetX;
     }
 
-    public float[] getXYCoordinates() {
-        float[] coords = {getX(), getY()};
-        return coords;
+    public float getTargetY(){
+        return targetY;
+    }
+
+    public boolean isStopped(){
+        return targetX==getX() && targetY==getY();
     }
 
 

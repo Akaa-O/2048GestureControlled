@@ -56,8 +56,13 @@ public class GameLoopTask extends TimerTask{
 
         // Generate new coordinates for game block
         Random randomNum = new Random();
-        int newX =  randomNum.nextInt(4);
-        int newY = randomNum.nextInt(4);
+        int newX;
+        int newY;
+
+        do{
+            newX = randomNum.nextInt(4);
+            newY = randomNum.nextInt(4);
+        }while(isOccupied(newX, newY));
 
         GameBlockTemplate block = new GameBlock(context, XPositions[newX], YPositions[newY], relativeLayout);
         myBlocks.add(block);
@@ -106,9 +111,9 @@ public class GameLoopTask extends TimerTask{
     // isOccupied()
     // XYCoords is a coordinate pair (x,y) obtained from each block in the myBlocks array
 
-    public boolean isOccupied(float XYCoords[]) {
+    public boolean isOccupied(float x, float y) {
         for (GameBlockTemplate block : myBlocks) {
-            if (XYCoords[0] == block.getX() && XYCoords[1] == block.getY()) {
+            if (x == block.getTargetX() && y == block.getTargetY()) {
                 return true;
             }
         }
