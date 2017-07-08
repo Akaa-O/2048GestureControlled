@@ -159,61 +159,10 @@ public class GameLoopTask extends TimerTask{
                         occupants.add(occupant);
                         num++;
                     }
-                    switch(num){
-                        case 0:
-                            break;
-                        case 1:
-                            if(occupants.get(0).getValue()==currentBlock.getValue()){
-                                occupants.get(0).setValue();
-                                myBlocks.remove(occupants.get(1));
-                                currentBlock = null;
-                                num--;
-                            }
-                            break;
-                        case 2:
-                            if(occupants.get(0).getValue()==occupants.get(1).getValue()){
-                                occupants.get(0).setValue();
-                                myBlocks.remove(occupants.get(1));
-                                occupants.set(1, null);
-                                num--;
-                            }else if(occupants.get(1).getValue()==currentBlock.getValue()){
-                                occupants.get(1).setValue();
-                                myBlocks.remove(currentBlock);
-                                currentBlock = null;
-                                num--;
-                            }
-                            break;
-                        case 3:
-                            if(occupants.get(0).getValue()==occupants.get(1).getValue()){
-                                occupants.get(0).setValue();
-                                myBlocks.remove(occupants.get(1));
-                                occupants.set(1,null);
-                                num--;
-                                if(occupants.get(2).getValue()==occupants.get(3).getValue()){
-                                    occupants.get(2).setValue();
-                                    myBlocks.remove(occupants.get(3));
-                                    occupants.set(3,null);
-                                    num--;
-                                }
-                            }else if(occupants.get(1).getValue()==occupants.get(2).getValue()){
-                                occupants.get(1).setValue();
-                                myBlocks.remove(occupants.get(2));
-                                occupants.set(2,null);
-                                num--;
-                            }else if(occupants.get(2).getValue()==occupants.get(3).getValue()){
-                                occupants.get(2).setValue();
-                                myBlocks.remove(occupants.get(3));
-                                occupants.set(3,null);
-                                num--;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
                     currentlyChecking+=SLOT_ISOLATION;
                 }
                 System.out.println(num);
-                return num;
+                return findPosition(num, occupants, currentBlock);
             }else if(dir == Direction.RIGHT){
                 currentlyChecking = X_MAX;
                 while(currentlyChecking-currentBlock.getX()>10){
@@ -227,7 +176,7 @@ public class GameLoopTask extends TimerTask{
                     currentlyChecking-=SLOT_ISOLATION;
                 }
                 System.out.println(num);
-                return num;
+                return findPosition(num, occupants, currentBlock);
             }
         }else{
             if(dir == Direction.UP){
@@ -243,7 +192,7 @@ public class GameLoopTask extends TimerTask{
                     currentlyChecking+=SLOT_ISOLATION;
                 }
                 System.out.println(num);
-                return num;
+                return findPosition(num, occupants, currentBlock);
             }else if(dir == Direction.DOWN){
                 currentlyChecking = Y_MAX;
                 while(currentlyChecking-currentBlock.getY()>10){
@@ -257,8 +206,63 @@ public class GameLoopTask extends TimerTask{
                     currentlyChecking-=SLOT_ISOLATION;
                 }
                 System.out.println(num);
-                return num;
+                return findPosition(num, occupants, currentBlock);
             }
+        }
+        return num;
+    }
+
+    private int findPosition(int num, ArrayList<GameBlockTemplate> occupants, GameBlockTemplate currentBlock){
+        switch(num){
+            case 0:
+                break;
+            case 1:
+                if(occupants.get(0).getValue()==currentBlock.getValue()){
+                    occupants.get(0).setValue();
+                    myBlocks.remove(currentBlock);
+                    currentBlock = null;
+                    num--;
+                }
+                break;
+            case 2:
+                if(occupants.get(0).getValue()==occupants.get(1).getValue()){
+                    occupants.get(0).setValue();
+                    myBlocks.remove(occupants.get(1));
+                    occupants.set(1, null);
+                    num--;
+                }else if(occupants.get(1).getValue()==currentBlock.getValue()){
+                    occupants.get(1).setValue();
+                    myBlocks.remove(currentBlock);
+                    currentBlock = null;
+                    num--;
+                }
+                break;
+            case 3:
+                if(occupants.get(0).getValue()==occupants.get(1).getValue()){
+                    occupants.get(0).setValue();
+                    myBlocks.remove(occupants.get(1));
+                    occupants.set(1,null);
+                    num--;
+                    if(occupants.get(2).getValue()==currentBlock.getValue()){
+                        occupants.get(2).setValue();
+                        myBlocks.remove(currentBlock);
+                        currentBlock = null;
+                        num--;
+                    }
+                }else if(occupants.get(1).getValue()==occupants.get(2).getValue()){
+                    occupants.get(1).setValue();
+                    myBlocks.remove(occupants.get(2));
+                    occupants.set(2,null);
+                    num--;
+                }else if(occupants.get(2).getValue()==currentBlock.getValue()){
+                    occupants.get(2).setValue();
+                    myBlocks.remove(currentBlock);
+                    currentBlock = null;
+                    num--;
+                }
+                break;
+            default:
+                break;
         }
         return num;
     }
