@@ -19,6 +19,7 @@ public class GameBlock extends GameBlockTemplate{
     private float targetX;
     private float targetY;
     private float velocity;
+    private int value;
 
     private TextView mTextView;
 
@@ -38,7 +39,8 @@ public class GameBlock extends GameBlockTemplate{
 
         mTextView = new TextView(myContext);
         Random randNum = new Random();
-        mTextView.setText(String.valueOf((randNum.nextInt(2)+1)*2));
+        value = (randNum.nextInt(2)+1)*2;
+        mTextView.setText(String.valueOf(value));
         mTextView.setTextSize(16);
         mTextView.setX(coordX+TEXT_OFFSET);
         mTextView.setY(coordY+TEXT_OFFSET);
@@ -54,13 +56,16 @@ public class GameBlock extends GameBlockTemplate{
         this.targetY = targetY;
     }
 
-    public boolean isStopped(){
-        return targetX==getX() && targetY==getY();
+    public float getTargetX(){
+        return targetX;
     }
 
-    public float[] getXYCoordinates() {
-        float[] coords = {getX(), getY()};
-        return coords;
+    public float getTargetY(){
+        return targetY;
+    }
+
+    public boolean isStopped(){
+        return targetX==getX() && targetY==getY();
     }
 
 

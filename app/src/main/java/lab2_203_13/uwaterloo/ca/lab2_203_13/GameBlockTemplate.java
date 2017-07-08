@@ -21,4 +21,8 @@ public abstract class GameBlockTemplate extends AppCompatImageView{
 
     public abstract void move();
 
+    public abstract float getTargetX();
+
+    public abstract float getTargetY();
+
 }
