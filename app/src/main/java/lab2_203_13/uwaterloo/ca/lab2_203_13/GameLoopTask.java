@@ -59,8 +59,7 @@ public class GameLoopTask extends TimerTask{
         int newX =  randomNum.nextInt(4);
         int newY = randomNum.nextInt(4);
 
-        GameBlockTemplate block = new GameBlock(context, XPositions[newX], YPositions[newY]);
-        relativeLayout.addView(block);
+        GameBlockTemplate block = new GameBlock(context, XPositions[newX], YPositions[newY], relativeLayout);
         myBlocks.add(block);
     }
 
