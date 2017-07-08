@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.TimerTask;
 
 /**
@@ -20,12 +21,15 @@ public class GameLoopTask extends TimerTask{
     public Direction currentDirection;
 
 
+
     private ArrayList<GameBlockTemplate> myBlocks;
     private static final float X_MIN = -58F;
     private static final float Y_MIN = -58F;
     private static final float X_MAX = 747F;
     private static final float Y_MAX = 747F;
 
+    private static final float[] XPositions = {X_MIN, 0, 0, X_MAX};
+    private static final float[] YPositions = {Y_MIN, 0, 0, Y_MAX};
 
     public GameLoopTask(Activity activity, Context context, RelativeLayout relativeLayout){
         myActivity = activity;
@@ -49,7 +53,13 @@ public class GameLoopTask extends TimerTask{
     }
 
     public void createBlock(){
-        GameBlockTemplate block = new GameBlock(context, X_MIN, Y_MIN);
+
+        // Generate new coordinates for game block
+        Random randomNum = new Random();
+        int newX =  randomNum.nextInt(4);
+        int newY = randomNum.nextInt(4);
+
+        GameBlockTemplate block = new GameBlock(context, XPositions[newX], YPositions[newY]);
         relativeLayout.addView(block);
         myBlocks.add(block);
     }
@@ -90,6 +100,7 @@ public class GameLoopTask extends TimerTask{
                     break;
             }
         }
+        createBlock();
     }
 
     public enum Direction{
