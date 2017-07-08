@@ -7,10 +7,9 @@ import android.view.ViewGroup;
  * Created by desmond on 6/24/17.
  */
 
-public class GameBlock extends android.support.v7.widget.AppCompatImageView{
+public class GameBlock extends GameBlockTemplate{
 
     private static final float IMAGE_SCALE = 0.66F;
-    private GameLoopTask.Direction myDirection;
 
     private float targetX;
     private float targetY;
@@ -18,7 +17,6 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView{
 
     public GameBlock(Context myContext,float coordX, float coordY){
         super(myContext);
-        myDirection = GameLoopTask.Direction.STOPPED;
         setX(coordX);
         setY(coordY);
         this.setImageResource(R.drawable.gameblock);
@@ -38,26 +36,54 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView{
         this.targetY = targetY;
     }
 
-    public float getTargetX(){
-        return targetX;
+    public boolean isStopped(){
+        return targetX==getX() && targetY==getY();
     }
 
-    public float getTargetY(){
-        return targetY;
+
+    @Override
+    public void setDestination(float x, float y) {
+        setTargetX(x);
+        setTargetY(y);
     }
 
-    public float getVelocity(){
-        return velocity;
-    }
-    public void setVelocity(float velocity){
-        this.velocity = velocity;
-    }
+    @Override
+    public void move() {
+        if(getX()!=targetX){
+            //Moving to the right
+            if(getX()<targetX){
+                if(targetX<getX()+velocity){
+                    setX(targetX);
+                }else{
+                    setX(getX()+velocity);
+                }
+            }else{  //Moving to the left
+                if(targetX>getX()-velocity){
+                    setX(targetX);
+                }else{
+                    setX(getX()-velocity);
+                }
+            }
+        }else if(getY()!=targetY){
+            //Moving to the bottom
+            if(getY()<targetY){
+                if(targetY<getY()+velocity){
+                    setY(targetY);
+                }else{
+                    setY(getY()+velocity);
+                }
+            }else {  //Moving to the top
+                if(targetY>getY()-velocity){
+                    setY(targetY);
+                }else{
+                    setY(getY()-velocity);
+                }
+            }
+        }else{  //Blocks stopped
+            velocity = 0;
+            return;
+        }
 
-    public GameLoopTask.Direction getDirection(){
-        return myDirection;
-    }
-
-    public void setDirection(GameLoopTask.Direction dir){
-        myDirection = dir;
+        velocity += ACCELERATION;
     }
 }

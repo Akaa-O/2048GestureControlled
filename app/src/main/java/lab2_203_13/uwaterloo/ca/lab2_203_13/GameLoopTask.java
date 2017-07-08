@@ -20,12 +20,11 @@ public class GameLoopTask extends TimerTask{
     public Direction currentDirection;
 
 
-    private ArrayList<GameBlock> myBlocks;
+    private ArrayList<GameBlockTemplate> myBlocks;
     private static final float X_MIN = -58F;
     private static final float Y_MIN = -58F;
     private static final float X_MAX = 747F;
     private static final float Y_MAX = 747F;
-    private static final float ACCELERATION = 30;
 
 
     public GameLoopTask(Activity activity, Context context, RelativeLayout relativeLayout){
@@ -50,67 +49,21 @@ public class GameLoopTask extends TimerTask{
     }
 
     public void createBlock(){
-        final GameBlock block = new GameBlock(context, X_MIN, Y_MIN);
+        GameBlockTemplate block = new GameBlock(context, X_MIN, Y_MIN);
         relativeLayout.addView(block);
         myBlocks.add(block);
     }
 
     public void move(){
-        for(GameBlock block : myBlocks){
-            switch(currentDirection){
-                case LEFT:
-                    block.setTargetX(X_MIN);
-                    if(block.getX()>block.getTargetX()){
-                        block.setX(block.getX()-block.getVelocity());
-                        block.setVelocity(block.getVelocity()+ACCELERATION);
-                    }else{
-                        block.setX(block.getTargetX());
-                        block.setVelocity(0);
-                        block.setDirection(Direction.STOPPED);
-                        currentDirection = Direction.STOPPED;
-                    }
-                    break;
-                case RIGHT:
-                    block.setTargetX(X_MAX);
-                    if(block.getX()<block.getTargetX()){
-                        block.setX(block.getX()+block.getVelocity());
-                        block.setVelocity(block.getVelocity()+ACCELERATION);
-                    }else{
-                        block.setX(block.getTargetX());
-                        block.setVelocity(0);
-                        block.setDirection(Direction.STOPPED);
-                        currentDirection = Direction.STOPPED;
-                    }
-                    break;
-                case UP:
-                    block.setTargetY(Y_MIN);
-                    if(block.getY()>block.getTargetY()){
-                        block.setY(block.getY()-block.getVelocity());
-                        block.setVelocity(block.getVelocity()+ACCELERATION);
-                    }else{
-                        block.setY(block.getTargetY());
-                        block.setVelocity(0);
-                        block.setDirection(Direction.STOPPED);
-                        currentDirection = Direction.STOPPED;
-                    }
-                    break;
-                case DOWN:
-                    block.setTargetY(Y_MAX);
-                    if(block.getY()<block.getTargetY()){
-                        block.setY(block.getY()+block.getVelocity());
-                        block.setVelocity(block.getVelocity()+ACCELERATION);
-                    }else{
-                        block.setY(block.getTargetY());
-                        block.setVelocity(0);
-                        block.setDirection(Direction.STOPPED);
-                        currentDirection = Direction.STOPPED;
-                    }
-                    break;
-                default:
-                    block.setDirection(Direction.STOPPED);
-                    currentDirection = Direction.STOPPED;
-                    break;
+        boolean directionStopped = true;
+        for(GameBlockTemplate block : myBlocks){
+            block.move();
+            if(!block.isStopped()) {
+                directionStopped = false;
             }
+        }
+        if (directionStopped){
+            currentDirection = Direction.STOPPED;
         }
     }
 
@@ -119,8 +72,23 @@ public class GameLoopTask extends TimerTask{
             return;
         }
         currentDirection = direction;
-        for(GameBlock block : myBlocks){
-            block.setDirection(direction);
+        for(GameBlockTemplate block : myBlocks){
+            switch(direction){
+                case LEFT:
+                    block.setDestination(X_MIN, block.getY());
+                    break;
+                case RIGHT:
+                    block.setDestination(X_MAX, block.getY());
+                    break;
+                case UP:
+                    block.setDestination(block.getX(), Y_MIN);
+                    break;
+                case DOWN:
+                    block.setDestination(block.getX(), Y_MAX);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
