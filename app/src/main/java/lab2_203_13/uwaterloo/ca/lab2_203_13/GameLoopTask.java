@@ -30,6 +30,7 @@ public class GameLoopTask extends TimerTask{
 
     private static final float[] XPositions = {X_MIN, 210.33f, 478.66f, X_MAX};
     private static final float[] YPositions = {Y_MIN, 210.33f, 478.66f, Y_MAX};
+    private static final float SLOT_ISOLATION = 268.33f;
 
     public GameLoopTask(Activity activity, Context context, RelativeLayout relativeLayout){
         myActivity = activity;
@@ -54,6 +55,9 @@ public class GameLoopTask extends TimerTask{
 
     public void createBlock(){
 
+        if(myBlocks.size()==16){
+            return;
+        }
         // Generate new coordinates for game block
         Random randomNum = new Random();
         int newX;
@@ -86,19 +90,24 @@ public class GameLoopTask extends TimerTask{
             return;
         }
         currentDirection = direction;
+        int offset;
         for(GameBlockTemplate block : myBlocks){
             switch(direction){
                 case LEFT:
-                    block.setDestination(X_MIN, block.getY());
+                    offset = inBetween(block, Direction.LEFT, true);
+                    block.setDestination(X_MIN+offset*SLOT_ISOLATION, block.getY());
                     break;
                 case RIGHT:
-                    block.setDestination(X_MAX, block.getY());
+                    offset = inBetween(block, Direction.RIGHT, true);
+                    block.setDestination(X_MAX-offset*SLOT_ISOLATION, block.getY());
                     break;
                 case UP:
-                    block.setDestination(block.getX(), Y_MIN);
+                    offset = inBetween(block, Direction.UP, false);
+                    block.setDestination(block.getX(), Y_MIN+offset*SLOT_ISOLATION);
                     break;
                 case DOWN:
-                    block.setDestination(block.getX(), Y_MAX);
+                    offset = inBetween(block, Direction.DOWN, false);
+                    block.setDestination(block.getX(), Y_MAX-offset*SLOT_ISOLATION);
                     break;
                 default:
                     break;
@@ -122,5 +131,27 @@ public class GameLoopTask extends TimerTask{
 
     public enum Direction{
         LEFT, RIGHT, UP, DOWN, STOPPED
+    }
+
+    private int inBetween(GameBlockTemplate currentBlock, Direction dir, boolean checksX){
+        int num = 0;
+        for(GameBlockTemplate block : myBlocks){
+            if(currentBlock.getX()==block.getTargetX()&&currentBlock.getY()==block.getTargetY()){   //Same block
+                continue;
+            }else if(checksX&&currentBlock.getY()==block.getTargetY()){ //block aligned in x axis
+                if(dir.equals(Direction.LEFT)&&block.getTargetX()<currentBlock.getX()){
+                    num++;
+                }else if(dir.equals(Direction.RIGHT)&&block.getTargetX()>currentBlock.getX()){
+                    num++;
+                }
+            }else if(!checksX&&currentBlock.getX()==block.getTargetX()) {  //block aligned in y axis
+                if(dir.equals(Direction.UP)&&block.getTargetY()<currentBlock.getY()){
+                    num++;
+                }else if(dir.equals(Direction.DOWN)&&block.getTargetY()>currentBlock.getY()){
+                    num++;
+                }
+            }
+        }
+        return num;
     }
 }
