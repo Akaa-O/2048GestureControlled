@@ -56,8 +56,12 @@ public class MainActivity extends Activity {
         //GameLoopTask
         Timer timer = new Timer();
         GameLoopTask gameLoopTask = new GameLoopTask(this, getBaseContext(), mainLayout);
+
+        // Add first two blocks to the game
         gameLoopTask.createBlock();
-        timer.schedule(gameLoopTask, 50, 50);
+        gameLoopTask.createBlock();
+
+        timer.schedule(gameLoopTask, 16, 16);
 
         // Sensor
 
@@ -92,10 +96,4 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static int convertPixelsToDp(float px, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        int dp = (int) (px / (metrics.densityDpi/ 160f));
-        return dp;
-    }
 }
