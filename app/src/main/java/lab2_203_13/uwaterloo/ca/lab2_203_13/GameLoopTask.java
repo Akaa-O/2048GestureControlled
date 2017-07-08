@@ -102,6 +102,19 @@ public class GameLoopTask extends TimerTask{
         createBlock();
     }
 
+
+    // isOccupied()
+    // XYCoords is a coordinate pair (x,y) obtained from each block in the myBlocks array
+
+    public boolean isOccupied(float XYCoords[]) {
+        for (GameBlockTemplate block : myBlocks) {
+            if (XYCoords[0] == block.getX() && XYCoords[1] == block.getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public enum Direction{
         LEFT, RIGHT, UP, DOWN, STOPPED
     }

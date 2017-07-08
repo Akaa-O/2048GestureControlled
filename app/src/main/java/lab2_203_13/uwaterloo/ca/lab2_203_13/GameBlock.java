@@ -58,6 +58,11 @@ public class GameBlock extends GameBlockTemplate{
         return targetX==getX() && targetY==getY();
     }
 
+    public float[] getXYCoordinates() {
+        float[] coords = {getX(), getY()};
+        return coords;
+    }
+
 
     @Override
     public void setDestination(float x, float y) {
