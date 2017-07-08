@@ -122,12 +122,22 @@ public class GameLoopTask extends TimerTask{
 
     public boolean isOccupied(float x, float y) {
         for (GameBlockTemplate block : myBlocks) {
-            if (x == block.getTargetX() && y == block.getTargetY()) {
+            if (Math.abs(x-block.getTargetX())<1 && Math.abs(y-block.getTargetY())<1) {
                 return true;
             }
         }
         return false;
     }
+
+    public boolean isCurrentlyOccupied(float x, float y) {
+        for (GameBlockTemplate block : myBlocks) {
+            if (Math.abs(x-block.getX())<1 && Math.abs(y-block.getY())<1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public enum Direction{
         LEFT, RIGHT, UP, DOWN, STOPPED
@@ -135,21 +145,58 @@ public class GameLoopTask extends TimerTask{
 
     private int inBetween(GameBlockTemplate currentBlock, Direction dir, boolean checksX){
         int num = 0;
-        for(GameBlockTemplate block : myBlocks){
-            if(currentBlock.getX()==block.getX()&&currentBlock.getY()==block.getY()){   //Same block
-                continue;
-            }else if(checksX&&currentBlock.getY()==block.getY()){ //block aligned in x axis
-                if(dir.equals(Direction.LEFT)&&block.getX()<currentBlock.getX()){
-                    num++;
-                }else if(dir.equals(Direction.RIGHT)&&block.getX()>currentBlock.getX()){
-                    num++;
+        float currentlyChecking;
+        if(checksX){
+            if(dir == Direction.LEFT){
+                currentlyChecking = X_MIN;
+                while(currentlyChecking-currentBlock.getX()<-1){
+                    if(isCurrentlyOccupied(currentlyChecking, currentBlock.getY())){
+                        System.out.println(currentlyChecking);
+                        System.out.println(currentBlock.getY());
+                        num++;
+                    }
+                    currentlyChecking+=SLOT_ISOLATION;
                 }
-            }else if(!checksX&&currentBlock.getX()==block.getX()) {  //block aligned in y axis
-                if(dir.equals(Direction.UP)&&block.getY()<currentBlock.getY()){
-                    num++;
-                }else if(dir.equals(Direction.DOWN)&&block.getY()>currentBlock.getY()){
-                    num++;
+                System.out.println(num);
+                return num;
+            }else if(dir == Direction.RIGHT){
+                currentlyChecking = X_MAX;
+                while(currentlyChecking-currentBlock.getX()>1){
+                    if(isCurrentlyOccupied(currentlyChecking, currentBlock.getY())){
+                        System.out.println(currentlyChecking);
+                        System.out.println(currentBlock.getY());
+                        num++;
+                    }
+                    currentlyChecking-=SLOT_ISOLATION;
                 }
+                System.out.println(num);
+                return num;
+            }
+        }else{
+            if(dir == Direction.UP){
+                currentlyChecking = Y_MIN;
+                while(currentlyChecking-currentBlock.getY()<-1){
+                    if(isCurrentlyOccupied(currentBlock.getX(), currentlyChecking)){
+                        System.out.println(currentBlock.getX());
+                        System.out.println(currentlyChecking);
+                        num++;
+                    }
+                    currentlyChecking+=SLOT_ISOLATION;
+                }
+                System.out.println(num);
+                return num;
+            }else if(dir == Direction.DOWN){
+                currentlyChecking = Y_MAX;
+                while(currentlyChecking-currentBlock.getX()>1){
+                    if(isCurrentlyOccupied(currentBlock.getX(), currentlyChecking)){
+                        System.out.println(currentBlock.getX());
+                        System.out.println(currentlyChecking);
+                        num++;
+                    }
+                    currentlyChecking-=SLOT_ISOLATION;
+                }
+                System.out.println(num);
+                return num;
             }
         }
         return num;
