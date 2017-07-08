@@ -68,6 +68,14 @@ public class GameBlock extends GameBlockTemplate{
         return targetX==getX() && targetY==getY();
     }
 
+    public int getValue(){
+        return value;
+    }
+
+    public void setValue(){
+        value*=2;
+    }
+
 
     @Override
     public void setDestination(float x, float y) {
