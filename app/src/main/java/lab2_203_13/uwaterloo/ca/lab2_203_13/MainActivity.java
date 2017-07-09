@@ -1,13 +1,10 @@
 package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
 
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,10 +20,11 @@ public class MainActivity extends Activity {
     // Accelerometer Sensor
 
     Sensor accelerometerSensor;
-    AccelerometerSensorEventListener accelerometerSensorEventListener;
+    AccelerometerEventListener  accelerometerEventListener;
+
     TextView accelerometerSensorLabel;
 
-    ReadingsBuffer accelerometerValues = new ReadingsBuffer(100);
+    //ReadingsBuffer accelerometerValues = new ReadingsBuffer(100);
 
 
     @Override
@@ -66,7 +64,7 @@ public class MainActivity extends Activity {
         // Sensor
 
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerSensorEventListener = new AccelerometerSensorEventListener(accelerometerSensorLabel, accelerometerValues, gameLoopTask);
+        accelerometerEventListener = new AccelerometerEventListener(accelerometerSensorLabel, gameLoopTask);
 
 
     }
@@ -78,7 +76,7 @@ public class MainActivity extends Activity {
 
         if (accelerometerSensor != null) {
             sensorManager.registerListener(
-                    accelerometerSensorEventListener,
+                    accelerometerEventListener,
                     accelerometerSensor,
                     SensorManager.SENSOR_DELAY_GAME);
         } else {
@@ -92,7 +90,7 @@ public class MainActivity extends Activity {
         super.onPause();
 
         if (accelerometerSensor != null) {
-            sensorManager.unregisterListener(accelerometerSensorEventListener, accelerometerSensor);
+            sensorManager.unregisterListener(accelerometerEventListener, accelerometerSensor);
         }
     }
 
