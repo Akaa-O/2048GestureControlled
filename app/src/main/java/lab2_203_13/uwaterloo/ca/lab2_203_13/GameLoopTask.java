@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.TimerTask;
 
@@ -23,6 +24,9 @@ public class GameLoopTask extends TimerTask{
 
 
     private ArrayList<GameBlockTemplate> myBlocks;
+
+    private HashSet<GameBlockTemplate> mergedBlocks;
+
     private static final float X_MIN = -58F;
     private static final float Y_MIN = -58F;
     private static final float X_MAX = 746.99F;
@@ -38,6 +42,7 @@ public class GameLoopTask extends TimerTask{
         this.relativeLayout = relativeLayout;
         this.context = context;
         currentDirection = Direction.STOPPED;
+        mergedBlocks = new HashSet<>();
     }
 
     @Override
@@ -113,6 +118,17 @@ public class GameLoopTask extends TimerTask{
                     break;
             }
         }
+
+        // Clear collected merged blocks
+
+        for (GameBlockTemplate block : mergedBlocks) {
+            myBlocks.remove(block);
+            relativeLayout.removeView(block);
+            relativeLayout.removeView(((GameBlock)block).mTextView);
+        }
+
+        mergedBlocks.clear();
+
         createBlock();
     }
 
@@ -219,45 +235,51 @@ public class GameLoopTask extends TimerTask{
             case 1:
                 if(occupants.get(0).getValue()==currentBlock.getValue()){
                     occupants.get(0).setValue();
-                    myBlocks.remove(currentBlock);
-                    currentBlock = null;
+                    mergedBlocks.add(currentBlock);
+                    //myBlocks.remove(currentBlock);
+                    //currentBlock = null;
                     num--;
                 }
                 break;
             case 2:
                 if(occupants.get(0).getValue()==occupants.get(1).getValue()){
                     occupants.get(0).setValue();
-                    myBlocks.remove(occupants.get(1));
+                    mergedBlocks.add(occupants.get(1));
                     occupants.set(1, null);
                     num--;
                 }else if(occupants.get(1).getValue()==currentBlock.getValue()){
                     occupants.get(1).setValue();
-                    myBlocks.remove(currentBlock);
-                    currentBlock = null;
+                    mergedBlocks.add(currentBlock);
+                    //myBlocks.remove(currentBlock);
+                    //currentBlock = null;
                     num--;
                 }
                 break;
             case 3:
                 if(occupants.get(0).getValue()==occupants.get(1).getValue()){
                     occupants.get(0).setValue();
-                    myBlocks.remove(occupants.get(1));
+                    mergedBlocks.add(occupants.get(1));
+                    //myBlocks.remove(occupants.get(1));
                     occupants.set(1,null);
                     num--;
                     if(occupants.get(2).getValue()==currentBlock.getValue()){
                         occupants.get(2).setValue();
-                        myBlocks.remove(currentBlock);
-                        currentBlock = null;
+                        mergedBlocks.add(currentBlock);
+                        //myBlocks.remove(currentBlock);
+                        //currentBlock = null;
                         num--;
                     }
                 }else if(occupants.get(1).getValue()==occupants.get(2).getValue()){
                     occupants.get(1).setValue();
-                    myBlocks.remove(occupants.get(2));
+                    mergedBlocks.add(occupants.get(2));
+                    // myBlocks.remove(occupants.get(2));
                     occupants.set(2,null);
                     num--;
                 }else if(occupants.get(2).getValue()==currentBlock.getValue()){
                     occupants.get(2).setValue();
-                    myBlocks.remove(currentBlock);
-                    currentBlock = null;
+                    mergedBlocks.add(currentBlock);
+                    // myBlocks.remove(currentBlock);
+                    //currentBlock = null;
                     num--;
                 }
                 break;
