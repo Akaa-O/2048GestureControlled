@@ -4,18 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.TimerTask;
 
-import static lab2_203_13.uwaterloo.ca.lab2_203_13.R.id.image;
 
 /**
  * Created by desmond on 6/24/17.
@@ -131,7 +126,7 @@ public class GameLoopTask extends TimerTask{
 
     public void createBlock(){
         gameStatus.bringToFront();
-        
+
         if (myBlocks.size() == 16) {
             return;
         }
