@@ -55,7 +55,6 @@ public class GameLoopTask extends TimerTask{
     @Override
     public void run() {
         //Update Screen
-
         myActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
