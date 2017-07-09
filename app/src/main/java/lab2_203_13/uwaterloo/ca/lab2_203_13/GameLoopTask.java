@@ -2,13 +2,20 @@ package lab2_203_13.uwaterloo.ca.lab2_203_13;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.TimerTask;
+
+import static lab2_203_13.uwaterloo.ca.lab2_203_13.R.id.image;
 
 /**
  * Created by desmond on 6/24/17.
@@ -31,7 +38,7 @@ public class GameLoopTask extends TimerTask{
     private static final float Y_MIN = -58F;
     private static final float X_MAX = 746.99F;
     private static final float Y_MAX = 746.99F;
-
+    public TextView gameStatus;
     private static final float[] XPositions = {X_MIN, 210.33f, 478.66f, X_MAX};
     private static final float[] YPositions = {Y_MIN, 210.33f, 478.66f, Y_MAX};
     private static final float SLOT_ISOLATION = 268.33f;
@@ -43,6 +50,11 @@ public class GameLoopTask extends TimerTask{
         this.context = context;
         currentDirection = Direction.STOPPED;
         mergedBlocks = new HashSet<>();
+
+        gameStatus = new TextView(context);
+        gameStatus.setY(500);
+        gameStatus.setX(500);
+        relativeLayout.addView(gameStatus);
     }
 
     @Override
@@ -98,13 +110,14 @@ public class GameLoopTask extends TimerTask{
                         }
                     }
 
-                    Log.d("Playable", String.valueOf(stillPlayable));
                     if (!stillPlayable) {
                         endGameL= true;
                     }
-                    if(endGameW){
-                        Log.d("Game Status:", "You Win");
-                    }else if (endGameL){
+                    if (endGameL){
+                        gameStatus.setText("YOU LOSE!");
+                        gameStatus.setTextColor(Color.RED);
+                        gameStatus.setTextSize(40);
+                        gameStatus.setX(300);
                         Log.d("Game Status:", "You Lose");
                     }
 
@@ -117,7 +130,8 @@ public class GameLoopTask extends TimerTask{
     }
 
     public void createBlock(){
-
+        gameStatus.bringToFront();
+        
         if (myBlocks.size() == 16) {
             return;
         }
@@ -151,11 +165,6 @@ public class GameLoopTask extends TimerTask{
 
     public void setDirection(Direction direction){
         if(!currentDirection.equals(Direction.STOPPED) || endGameW == true || endGameL == true){
-//            if(endGameW){
-//                Log.d("Game Status:", "You Win");
-//            }else if (endGameL){
-//                Log.d("Game Status:", "You Lose");
-//            }
             return;
         }
         currentDirection = direction;
@@ -198,6 +207,11 @@ public class GameLoopTask extends TimerTask{
         for(int i=0; i< myBlocks.size() ; ++i){
             if (myBlocks.get(i).getValue() == 256){
                 endGameW = true;
+                gameStatus.setText("YOU WIN!!");
+                gameStatus.setTextColor(Color.GREEN);
+                gameStatus.setTextSize(40);
+                gameStatus.setX(300);
+                Log.d("Game Status:", "you win");
             }
         }
         if(!endGameW && !endGameL) {
