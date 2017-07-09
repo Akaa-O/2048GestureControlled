@@ -20,8 +20,8 @@ public class GameLoopTask extends TimerTask{
     private RelativeLayout relativeLayout;
     private Context context;
     public Direction currentDirection;
-
-
+    public boolean endGameW = false;
+    public boolean endGameL = false;
 
     private ArrayList<GameBlockTemplate> myBlocks;
 
@@ -52,6 +52,64 @@ public class GameLoopTask extends TimerTask{
         myActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                if (myBlocks.size() == 16) {
+                    ArrayList<GameBlockTemplate> ordered = new ArrayList<GameBlockTemplate>();
+                    for(float posY : YPositions){
+                        for(float posX : XPositions){
+                            ordered.add(isCurrentlyOccupied(posX, posY));
+                        }
+                    }
+
+                    int indexUp, indexRight, indexDown, indexLeft;
+                    boolean stillPlayable = false;
+
+                    for (int i = 0; i < 16; i++) {
+
+                        GameBlockTemplate currentBlock = ordered.get(i);
+
+                        if (i + 4 < 16) {
+                            indexDown = i + 4;
+                            if(ordered.get(indexDown)!=null && ordered.get(indexDown).getValue()==currentBlock.getValue()){
+                                stillPlayable = true;
+                                break;
+                            }
+                        }
+                        if (i - 4 >= 0) {
+                            indexUp = i - 4;
+                            if(ordered.get(indexUp)!=null && ordered.get(indexUp).getValue()==currentBlock.getValue() ){
+                                stillPlayable = true;
+                                break;
+                            }
+                        }
+                        if (i + 1 < 16) {
+                            indexRight = i + 1;
+                            if(ordered.get(indexRight)!=null && ordered.get(indexRight).getValue()==currentBlock.getValue() ){
+                                stillPlayable = true;
+                                break;
+                            }
+                        }
+                        if (i - 1 >= 0) {
+                            indexLeft = i - 1;
+                            if(ordered.get(indexLeft)!=null && ordered.get(indexLeft).getValue()==currentBlock.getValue() ){
+                                stillPlayable = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    Log.d("Playable", String.valueOf(stillPlayable));
+                    if (!stillPlayable) {
+                        endGameL= true;
+                    }
+                    if(endGameW){
+                        Log.d("Game Status:", "You Win");
+                    }else if (endGameL){
+                        Log.d("Game Status:", "You Lose");
+                    }
+
+                }
+
                 move();
             }
         });
@@ -60,9 +118,10 @@ public class GameLoopTask extends TimerTask{
 
     public void createBlock(){
 
-        if(myBlocks.size()==16){
+        if (myBlocks.size() == 16) {
             return;
         }
+
         // Generate new coordinates for game block
         Random randomNum = new Random();
         int newX;
@@ -91,7 +150,12 @@ public class GameLoopTask extends TimerTask{
     }
 
     public void setDirection(Direction direction){
-        if(!currentDirection.equals(Direction.STOPPED)){
+        if(!currentDirection.equals(Direction.STOPPED) || endGameW == true || endGameL == true){
+//            if(endGameW){
+//                Log.d("Game Status:", "You Win");
+//            }else if (endGameL){
+//                Log.d("Game Status:", "You Lose");
+//            }
             return;
         }
         currentDirection = direction;
@@ -129,7 +193,16 @@ public class GameLoopTask extends TimerTask{
 
         mergedBlocks.clear();
 
-        createBlock();
+        //createBlock();
+
+        for(int i=0; i< myBlocks.size() ; ++i){
+            if (myBlocks.get(i).getValue() == 256){
+                endGameW = true;
+            }
+        }
+        if(!endGameW && !endGameL) {
+            createBlock();
+        }
     }
 
 
