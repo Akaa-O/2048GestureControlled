@@ -21,7 +21,7 @@ public class GameBlock extends GameBlockTemplate{
     private float velocity;
     private int value;
 
-    private TextView mTextView;
+    public TextView mTextView;
 
 
     public GameBlock(Context myContext,float coordX, float coordY, RelativeLayout layout){
@@ -74,6 +74,7 @@ public class GameBlock extends GameBlockTemplate{
 
     public void setValue(){
         value*=2;
+        mTextView.setText(String.valueOf(value));
     }
 
 
